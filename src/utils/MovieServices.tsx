@@ -1,58 +1,99 @@
-import * as contentfulManagement from 'contentful-management';
-
-
-type MovieData = {
-    title: string;
-    director: string;
-    actors: string[];
-    genre: string;
-    releaseDate: Date;
-    duration: number;
-
-};
+import { AssetFileObject, MovieData } from "@/types/types";
+import * as contentfulManagement from "contentful-management";
+import { toast } from "react-toastify";
 
 const client = contentfulManagement.createClient({
-    accessToken: process.env.NEXT_PUBLIC_PERSONAL_API_ACCESS_TOKEN as string
+    accessToken: process.env.NEXT_PUBLIC_PERSONAL_API_ACCESS_TOKEN as string,
 });
 
-const createMovieEntry = async (movieData: MovieData) => {
-    // Initialize the Contentful Management client with your access token
+const convertFileToAssetObject = async (
+    file: File
+): Promise<AssetFileObject> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve({
+                fileName: file.name,
+                contentType: file.type,
+                file: reader.result as ArrayBuffer,
+            });
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsArrayBuffer(file);
+    });
+};
 
-    // Get the space
+const createMovieEntry = async (movieData: MovieData) => {
+    const notify = () => toast("Zdjęcie zostało dodane");
     const environment = await client
         .getSpace(process.env.NEXT_PUBLIC_SPACE as string)
-        .then((space) =>
-            space.getEnvironment("master")
-        );
+        .then((space) => space.getEnvironment("master"));
 
-    // Create the entry
-    const entry = await environment.createEntry(
-        "movie",
-        {
+    let asset;
+    if (movieData.poster) {
+        const assetData = await convertFileToAssetObject(movieData.poster);
+        asset = await environment.createAssetFromFiles({
             fields: {
                 title: {
-                    'en-US': movieData.title
+                    "en-US": movieData.title,
                 },
-                director: {
-                    'en-US': movieData.director
+                file: {
+                    "en-US": {
+                        file: assetData.file || "",
+                        contentType: assetData.contentType,
+                        fileName: assetData.fileName,
+                    },
                 },
-                actors: {
-                    'en-US': movieData.actors
-                },
-                genre: {
-                    'en-US': movieData.genre
-                },
-                releaseDate: {
-                    'en-US': movieData.releaseDate
-                },
-                duration: {
-                    'en-US': movieData.duration
-                },
+                description: {},
             },
-        }
-    );
+        });
+
+        // Step 2: Process & Publish Asset
+        asset = await asset.processForAllLocales();
+        await asset.publish();
+        notify();
+    }
+
+    // Create the entry
+    const entry = await environment.createEntry("movie", {
+        fields: {
+            title: {
+                "en-US": movieData.title,
+            },
+            director: {
+                "en-US": movieData.director,
+            },
+            actors: {
+                "en-US": movieData.actors,
+            },
+            genre: {
+                "en-US": movieData.genre,
+            },
+            releaseDate: {
+                "en-US": movieData.releaseDate,
+            },
+            duration: {
+                "en-US": movieData.duration,
+            },
+            plot: {
+                "en-US": movieData.plot,
+            },
+            poster: asset
+                ? {
+                    "en-US": {
+                        sys: {
+                            id: asset.sys.id,
+                            linkType: "Asset",
+                            type: "Link",
+                        },
+                    },
+                }
+                : null,
+        },
+    });
 
     await entry.publish();
+
 };
 
 const deleteMovieEntry = async (movieId: string) => {
@@ -63,6 +104,5 @@ const deleteMovieEntry = async (movieId: string) => {
     await entry.unpublish(); // May be needed if your entries are published
     await entry.delete();
 };
-
 
 export { createMovieEntry, deleteMovieEntry };
