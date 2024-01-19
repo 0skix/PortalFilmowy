@@ -9,9 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^1.6.5",
+    "contentful": "^10.6.16",
+    "contentful-management": "^11.13.0",
     "next": "14.0.4",
+    "next-auth": "^4.24.5",
+    "nodemailer": "^6.9.8",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/node": "^20",
