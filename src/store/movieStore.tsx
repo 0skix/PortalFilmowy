@@ -3,6 +3,18 @@ import { createClient } from "contentful";
 import { persist } from "zustand/middleware";
 import { MovieCard } from "@/types/types";
 
+interface MovieState {
+    movies: MovieCard[];
+    filteredMovies: MovieCard[];
+    loadingMovies: boolean;
+    currentMovie: MovieCard | null;
+    setCurrentMovie: (movie: MovieCard | null) => void;
+    setMovies: (movies: MovieCard[]) => void;
+    filterMovies: (searchTerm: string) => void;
+    fetchMovies: () => Promise<void>;
+    fetchMovie: (movieId: string) => Promise<void>;
+}
+
 // Create a Contentful client instance
 const client = createClient({
     space: process.env.NEXT_PUBLIC_SPACE as string,
@@ -10,8 +22,12 @@ const client = createClient({
 });
 
 // Helper function to get image URL
-const getImageUrl = (imageField: { fields?: { file?: { url: string } } }): string => {
-    return imageField?.fields?.file?.url ? `https:${imageField.fields.file.url}` : "";
+const getImageUrl = (imageField: {
+    fields?: { file?: { url: string } };
+}): string => {
+    return imageField?.fields?.file?.url
+        ? `https:${imageField.fields.file.url}`
+        : "";
 };
 
 // Helper function to map the movie data
@@ -27,19 +43,6 @@ const mapContentfulMovie = (item: any): MovieCard => ({
     plot: String(item.fields.plot),
 });
 
-// Zustand state interface
-interface MovieState {
-    movies: MovieCard[];
-    filteredMovies: MovieCard[];
-    loadingMovies: boolean;
-    currentMovie: MovieCard | null;
-    setCurrentMovie: (movie: MovieCard | null) => void;
-    setMovies: (movies: MovieCard[]) => void;
-    filterMovies: (searchTerm: string) => void;
-    fetchMovies: () => Promise<void>;
-    fetchMovie: (movieId: string) => Promise<void>;
-}
-
 // Create the store with Zustand
 export const useMovieStore = create<MovieState>()(
     persist(
@@ -48,13 +51,16 @@ export const useMovieStore = create<MovieState>()(
             filteredMovies: [],
             loadingMovies: false,
             currentMovie: null,
-            setCurrentMovie: (movie: MovieCard | null) => set({ currentMovie: movie }),
-            setMovies: (movies: MovieCard[]) => set({ movies, filteredMovies: movies }),
-            filterMovies: (searchTerm: string) => set((state) => ({
-                filteredMovies: state.movies.filter((movie) =>
-                    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-                ),
-            })),
+            setCurrentMovie: (movie: MovieCard | null) =>
+                set({ currentMovie: movie }),
+            setMovies: (movies: MovieCard[]) =>
+                set({ movies, filteredMovies: movies }),
+            filterMovies: (searchTerm: string) =>
+                set((state) => ({
+                    filteredMovies: state.movies.filter((movie) =>
+                        movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+                    ),
+                })),
             fetchMovies: async () => {
                 set({ loadingMovies: true });
                 try {
@@ -72,9 +78,12 @@ export const useMovieStore = create<MovieState>()(
                 try {
                     const response = await client.getEntries({
                         content_type: "movie",
-                        'sys.id': movieId,
+                        "sys.id": movieId,
                     });
-                    const movie = response.items.length > 0 ? mapContentfulMovie(response.items[0]) : null;
+                    const movie =
+                        response.items.length > 0
+                            ? mapContentfulMovie(response.items[0])
+                            : null;
                     set({ currentMovie: movie });
                 } catch (error) {
                     console.error("Error fetching the movie:", error);
@@ -86,7 +95,10 @@ export const useMovieStore = create<MovieState>()(
         {
             name: "movie-storage",
             getStorage: () => localStorage,
-            partialize: (state) => ({ movies: state.movies, currentMovie: state.currentMovie }),
+            partialize: (state) => ({
+                movies: state.movies,
+                currentMovie: state.currentMovie,
+            }),
         }
     )
 );

@@ -1,5 +1,5 @@
 'use client';
-import { useMovieStore } from '@/store/store';
+import { useMovieStore } from '@/store/movieStore';
 import { usePathname } from 'next/navigation';
 
 import React, { useEffect, useState } from 'react'

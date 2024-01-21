@@ -1,12 +1,14 @@
 import Image from "next/image";
 import profile from "../../../public/profile.jpg";
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import { useMovieStore } from "@/store/store";
+import { signIn, signOut, useSession } from "next-auth/react";
 import CreateMovieModal from "../CreateMovieModal";
+import { useMovieStore } from "@/store/movieStore";
 
 
 const Navbar = () => {
+  const [email, setEmail] = useState("oskyzera@gmail.com");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -60,7 +62,7 @@ const Navbar = () => {
             <li>
               <a>Settings</a>
             </li>
-            <li>
+            <li onClick={() => signOut()}>
               <a>Logout</a>
             </li>
           </ul>

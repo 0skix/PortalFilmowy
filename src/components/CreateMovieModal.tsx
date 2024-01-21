@@ -1,5 +1,5 @@
 import { createMovieEntry } from "@/utils/MovieServices";
-import { useMovieStore } from "@/store/store";
+import { useMovieStore } from "@/store/movieStore";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { MovieCard } from "@/types/types";

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { MovieCard as MovieCardType } from '@/types/types';
 
-import { useMovieStore } from '@/store/store';
+import { useMovieStore } from '@/store/movieStore';
 import { useRouter } from 'next/navigation';
 
 interface MovieCardProps {
@@ -20,7 +20,6 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie, onDelete }) => 
         router.push(`/filmy/${movie.id}`);
     };
 
-
     return (
         <div onClick={handleClick} className="card bg-base-100 w-[18rem] h-[35rem] shadow-xl p-1 flex">
             <button
@@ -29,11 +28,12 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie, onDelete }) => 
             >
                 ✕
             </button>
+
             <div className="relative h-[100%] w-[100%]">
                 {!imageLoaded && (
-                    <div className="animate-pulse bg-gray-200 h-full w-full"></div>
+                    <div className="animate-pulse absolute bg-gray-200 h-full w-full"></div>
                 )}
-                <Image
+                {!movie.poster ? <div className="card-placeholder">No image available</div> : <Image
                     width={300}
                     height={300}
                     src={movie.poster}
@@ -41,7 +41,7 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie, onDelete }) => 
                     sizes="100%"
                     priority={true}
                     onLoad={() => setImageLoaded(true)}
-                />
+                />}
             </div>
             <div className="">
                 <h2 className="card-title center p-1 flex justify-center align-middle text-center">

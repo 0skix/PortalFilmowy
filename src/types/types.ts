@@ -10,6 +10,16 @@ export type MovieCard = {
     plot: string;
 };
 
+export type SeriesCard = {
+    id: string;
+    title: string;
+    description: string;
+    coverImage: string;
+    startDate: Date;
+    endDate: Date;
+    episodes: any[]; // Define a more specific type if possible
+}
+
 export type MovieData = {
     title: string;
     director: string;
@@ -20,6 +30,15 @@ export type MovieData = {
     plot: string;
     poster: File | null;
 };
+
+export type SeriesData = {
+    title: string;
+    description: string;
+    coverImage: File | null;
+    startDate: Date;
+    endDate: Date;
+    episodes: any[]; // Define a more specific type if possible
+}
 
 export type AssetFileObject = {
     fileName: string;

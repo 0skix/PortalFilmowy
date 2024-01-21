@@ -1,7 +1,6 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
-import { useMovieStore } from "@/store/store";
+import React, { useCallback, useEffect } from "react";
+import { useMovieStore } from "@/store/movieStore";
 import { deleteMovieEntry } from "@/utils/MovieServices";
 import { toast } from "react-toastify";
 import { MovieCard } from "@/types/types";
