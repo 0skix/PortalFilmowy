@@ -4,6 +4,7 @@ import { MovieCard as MovieCardType } from '@/types/types';
 
 import { useMovieStore } from '@/store/movieStore';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface MovieCardProps {
     movie: MovieCardType;
@@ -14,6 +15,7 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie, onDelete }) => 
     const [imageLoaded, setImageLoaded] = useState(false);
     const router = useRouter();
     const setCurrentMovie = useMovieStore((state) => state.setCurrentMovie);
+    const { data: session } = useSession();
 
     const handleClick = () => {
         setCurrentMovie(movie);
@@ -22,13 +24,12 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie, onDelete }) => 
 
     return (
         <div onClick={handleClick} className="card bg-base-100 w-[18rem] h-[35rem] shadow-xl p-1 flex">
-            <button
+            {session?.user?.role === "admin" && (<button
                 className="btn btn-sm btn-circle absolute right-2 top-2 z-10"
                 onClick={() => onDelete(movie.id)}
             >
                 ✕
-            </button>
-
+            </button>)}
             <div className="relative h-[100%] w-[100%]">
                 {!imageLoaded && (
                     <div className="animate-pulse absolute bg-gray-200 h-full w-full"></div>

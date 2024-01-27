@@ -2,20 +2,9 @@
 import React, { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "@/utils/supabaseClient";
+import Link from "next/link";
 
-
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY as string;
-const supabase = createClient(
-    url,
-    anonKey,
-    {
-        db: {
-            schema: "next_auth",
-        },
-    }
-);
 
 export default function LoginComponent() {
     const [email, setEmail] = useState("");
@@ -32,6 +21,7 @@ export default function LoginComponent() {
             toast.error("Błąd logowania");
             return;
         }
+        console.log(data)
 
         if (data.length === 0) {
             toast.error("Nie znaleziono użytkownika z tym adresem e-mail");
@@ -72,7 +62,7 @@ export default function LoginComponent() {
                             <button type="submit" className="btn btn-primary">
                                 Zaloguj się
                             </button>
-                            <a href="/signup" className="btn btn-ghost"> Zarejestruj się</a>
+                            <Link href="/signup" className="btn btn-ghost"> Zarejestruj się</Link>
                         </div>
                     </form>
                 </div>

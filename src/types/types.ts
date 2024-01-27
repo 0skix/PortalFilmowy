@@ -49,3 +49,8 @@ export type AssetFileObject = {
 export type LoadedImages = {
     [key: string]: boolean;
   };
+
+export type Category = {
+    id : number;
+    name : string;
+}

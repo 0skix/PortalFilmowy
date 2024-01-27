@@ -20,6 +20,13 @@ const handler = NextAuth({
     url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
     secret: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? "",
   }),
+  callbacks: {
+    session({ session, user }) {
+      session.user.id = user.id;
+      session.user.role = user.role;
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
