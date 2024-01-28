@@ -23,8 +23,8 @@ export async function GET(req: NextRequest) {
     id,
     comment,
     created_at,
-    user:users (name)
-    `)// Dołącz nazwę użytkownika z tabeli 'users'
+    user:users (name, id)
+    `)
     .eq("content_id", contentId);
 
   if (error) {

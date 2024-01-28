@@ -23,7 +23,7 @@ const MovieDetails = () => {
     }, [fetchMovie, movieId]);
 
 
-    if (!currentMovie || currentMovie.id !== movieId || !isClient || session === null) {
+    if (!currentMovie || currentMovie.id !== movieId || !isClient) {
         return <main className="flex min-h-screen flex-col items-center justify-between p-4">
             <h1 className="text-4xl">Loading...</h1>
         </main>;
@@ -31,7 +31,7 @@ const MovieDetails = () => {
     return (
         <main className="flex min-h-screen flex-col items-center  p-4">
             <CommentsList contentId={movieId} />
-            <CommentForm contentId={movieId} />
+            {session && <CommentForm contentId={movieId} />}
         </main>
     )
 }
