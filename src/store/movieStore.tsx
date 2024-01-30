@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createClient } from "contentful";
 import { persist } from "zustand/middleware";
 import { MovieCard } from "@/types/types";
+import supabase from "../utils/supabaseClient";
 
 interface MovieState {
     movies: MovieCard[];
