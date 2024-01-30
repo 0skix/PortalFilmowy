@@ -15,15 +15,15 @@ export default function RootLayout({
   session: Session | null;
 }) {
   return (
-    <html lang="en">
+    <html data-theme="cupcake">
       <SessionProvider session={session}>
-        <body>
+        <body className="bg-primary">
           <Navbar />
           {children}
           <Footer />
           <ToastContainer position="bottom-right" theme="dark" />
         </body>
       </SessionProvider>
-    </html>
+    </html >
   );
 }

@@ -40,7 +40,7 @@ const MoviesPage = () => {
         <main className="flex min-h-screen flex-col items-center justify-between p-4">
             <div className="flex gap-4 flex-wrap justify-center align-middle">
                 {loadingMovies ? (
-                    <Loading /> // Komponent 'Loading' powinien obsługiwać wyświetlanie skeletonów
+                    <Loading />
                 ) : (
                     filteredMovies.map((movie) => (
                         <MovieCardComponent

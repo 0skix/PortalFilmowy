@@ -61,6 +61,7 @@ const CommentsList = ({ contentId }: { contentId: string }) => {
         <div>
             <h3 className="text-lg font-semibold">Komentarze</h3>
             <div className="space-y-4">
+
                 {comments.length > 0 ? (
                     comments.map((comment) => (
                         <div
