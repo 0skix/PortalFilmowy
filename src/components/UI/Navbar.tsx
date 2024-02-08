@@ -3,49 +3,87 @@ import profile from "../../../public/profile.jpg";
 import React, { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import CreateMovieModal from "../CreateMovieModal";
+import ProfileModal from "./ProfileModal";
+import Link from "next/link";
 import { useMovieStore } from "@/store/movieStore";
 import { useSeriesStore } from "@/store/seriesStore";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const openProfileModal = () => setIsProfileModalOpen(true);
+  const closeProfileModal = () => setIsProfileModalOpen(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const filterMovies = useMovieStore((state) => state.filterMovies);
   const filterSeries = useSeriesStore((state) => state.filterSeries);
 
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
-    if (pathname === '/filmy') {
+    if (pathname === "/filmy") {
       filterMovies(searchTerm);
-    } else if (pathname === '/seriale') {
+    } else if (pathname === "/seriale") {
       filterSeries(searchTerm);
     }
   };
   const { data: session } = useSession();
+
   return (
     <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <a className="btn btn-ghost text-xl" href="/">
+      <div className="navbar-start">
+        <div className="dropdown">
+          <label tabIndex={0} className="btn btn-ghost lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 4.5a.5.5 0 01.5-.5h13a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5h13a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5h13a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li>
+              <Link href="/filmy">Filmy</Link>
+            </li>
+            <li>
+              <Link href="/seriale">Seriale</Link>
+            </li>
+            {session && (
+              <>
+                <li>
+                  <Link href="/polecane-filmy">Polecane Filmy</Link>
+                </li>
+                <li>
+                  <Link href="/polecane-seriale">Polecane Seriale</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+        <a className="btn btn-ghost normal-case text-xl hidden lg:flex">
           FilmPortal
         </a>
       </div>
-      {session === undefined ? (
-        <div className="flex-none gap-2">
-          <div className="skeleton w-60 h-12"></div>
-          <div className="skeleton w-60 h-12"></div>
-          <div className="skeleton w-60 h-12"></div>
-        </div>
-      ) : (
-        <div className="flex-none gap-2">
-          {session?.user?.role === "admin" && (
-            <button className="btn" onClick={openModal}>
-              Dodaj
-            </button>
-          )}
+      <input
+        type="text"
+        placeholder="Search"
+        className="input input-bordered w-24 md:w-auto"
+        onChange={handleSearch}
+      />
+
+      <div className="navbar-end">
+        <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal p-0">
             <li>
               <Link href="/filmy">Filmy</Link>
@@ -64,51 +102,53 @@ const Navbar = () => {
               </>
             )}
           </ul>
-          <div className="form-control">
-            <input
-              type="text"
-              placeholder="Search"
-              className="input input-bordered w-24 md:w-auto"
-              onChange={handleSearch}
-            />
-          </div>
-          {session ? (
+        </div>
+        {session ? (
+          <>
+            {session?.user?.role === "admin" && (
+              <button className="btn" onClick={openModal}>
+                Dodaj
+              </button>
+            )}
             <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar"
-              >
+              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                   <Image src={profile} alt="profile" />
                 </div>
-              </div>
+              </label>
               <ul
                 tabIndex={0}
-                className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a className="justify-between">
-                    Profile
-                    <span className="badge">New</span>
-                  </a>
+                  <a onClick={openProfileModal}>Profil</a>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <a>Ustawienia</a>
                 </li>
-                <li onClick={() => signOut()}>
-                  <a>Logout</a>
+                <li>
+                  <a onClick={() => signOut()}>Wyloguj</a>
                 </li>
               </ul>
             </div>
-          ) : (
-            <button className="btn btn-ghost">
-              <Link href="/login">Zaloguj się</Link>
-            </button>
-          )}
-        </div>)}
-      {isModalOpen && (
+          </>
+        ) : (
+          <Link href="/login">
+            <button className="btn">Zaloguj się</button>
+          </Link>
+        )}
+      </div>
+      {isModalOpen && session?.user?.role === "admin" && (
         <CreateMovieModal isOpen={isModalOpen} closeModal={closeModal} />
+      )}
+      {isProfileModalOpen && (
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          closeModal={closeProfileModal}
+          email={session?.user?.email || ""}
+          name={session?.user?.name || ""}
+          id={session?.user?.id || ""}
+        />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createClient } from "contentful";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { MovieCard } from "@/types/types";
 import supabase from "../utils/supabaseClient";
 
@@ -95,7 +95,7 @@ export const useMovieStore = create<MovieState>()(
         }),
         {
             name: "movie-storage",
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 movies: state.movies,
                 currentMovie: state.currentMovie,

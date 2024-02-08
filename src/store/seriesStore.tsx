@@ -1,7 +1,7 @@
 import { SeriesCard } from "@/types/types";
 import { create } from "zustand";
 import { createClient } from "contentful";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface SeriesState {
     series: SeriesCard[];
@@ -84,7 +84,7 @@ export const useSeriesStore = create<SeriesState>()(
         }),
         {
             name: "series-storage",
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 series: state.series,
                 currentSeries: state.currentSeries,

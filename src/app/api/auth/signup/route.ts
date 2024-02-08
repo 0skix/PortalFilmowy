@@ -4,10 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(req: NextRequest) {
-  // Parse the request body
   const { email, name, selectedCategories } = await req.json();
 
-  // Validate input...
   if (!email || !name || !selectedCategories) {
     return new NextResponse(JSON.stringify({ error: "Missing input" }), {
       status: 400,
@@ -17,7 +15,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Check if user already exists...
   const { data: existingUsers, error: existingUserError } = await supabase
     .from("users")
     .select("id")
@@ -44,7 +41,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Create user in Supabase...
   const { error: userError } = await supabase
     .from("users")
     .insert([{ email, name }]);
@@ -58,10 +54,9 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Explicitly type `categoryId` as a number
   const categoryInserts = selectedCategories.map((category: number) => ({
     user_email: email,
-    user_category: category, // Assuming `category` is an object with an `id` property
+    user_category: category,
   }));
 
   const { error: categoryError } = await supabase
@@ -80,7 +75,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Success...
   return new NextResponse(JSON.stringify({ message: "Signup successful" }), {
     status: 200,
     headers: {

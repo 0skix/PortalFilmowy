@@ -4,37 +4,59 @@ import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import supabase from "@/utils/supabaseClient";
 import Link from "next/link";
+import useUserStore from "@/store/userStore";
 
 
 export default function LoginComponent() {
     const [email, setEmail] = useState("");
+    const { setCategories } = useUserStore.getState();
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        const { data, error } = await supabase
+        // Sprawdź, czy użytkownik istnieje
+        const { data: userData, error: userError } = await supabase
             .from("users")
-            .select("email")
+            .select("id, email")
             .eq("email", email);
 
-        if (error) {
+        if (userError) {
             toast.error("Błąd logowania");
             return;
         }
-        console.log(data)
 
-        if (data.length === 0) {
+        if (userData.length === 0) {
             toast.error("Nie znaleziono użytkownika z tym adresem e-mail");
             return;
         }
 
-        // If user exists, proceed to sign in
-        const res = await signIn("email", { email, redirect: false });
+        const { data: categoriesData, error: categoriesError } = await supabase
+            .from("user_categories")
+            .select("user_category")
+            .eq("user_email", email);
+
+
+
+        if (categoriesError) {
+            toast.error("Nie udało się pobrać kategorii użytkownika");
+            return;
+        }
+        const { data: userCategories, error: userCategoriesError } = await supabase
+            .from("categories")
+            .select("id, name")
+            .in("id", categoriesData.map(category => category.user_category));
+
+        if (userCategoriesError) {
+            toast.error("Nie udało się pobrać kategorii użytkownika");
+            return;
+        }
+
+
+        const res = await signIn("email", { email, callbackUrl: "/", redirect: false });
         if (res?.error) {
-            // Handle error
             toast.error("Błąd logowania");
         } else {
-            // Handle successful login
+            setCategories(userCategories);
             toast.success("Mail wysłany! Sprawdź swoją skrzynkę pocztową");
         }
     };
