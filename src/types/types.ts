@@ -4,7 +4,12 @@ export type MovieCard = {
     poster: string;
     director: string;
     actors: string[];
-    genre: string;
+    category: {
+        fields: {
+            id: number;
+            name: string;
+        };
+    };
     releaseDate: Date;
     duration: number;
     plot: string;

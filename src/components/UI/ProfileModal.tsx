@@ -245,7 +245,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                                 Twoje kategorie (kliknij, aby usunąć)
                             </span>
                         </label>
-                        <div className="flex gap-1">
+                        <div className="flex flex-wrap gap-1">
                             {categories.map((category) => (
                                 <div
                                     key={category.id}

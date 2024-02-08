@@ -123,6 +123,7 @@ const MovieDetails = () => {
         }
     }, [session]);
 
+
     if (!currentMovie || currentMovie.id !== movieId || !isClient) {
         return (
             <main className="flex min-h-screen flex-col items-center justify-between p-4">
@@ -133,7 +134,7 @@ const MovieDetails = () => {
     return (
         <main className="container mx-auto p-1 min-h-[100vh]">
             <div className="card lg:card-side bg-base-100 shadow-xl max-h-[90vh] ">
-                <figure className="md:w-1/3 bg-black">
+                <figure className="md:w-[100%] bg-black">
                     <Image
                         src={currentMovie.poster}
                         alt={currentMovie.title}
@@ -144,26 +145,26 @@ const MovieDetails = () => {
                 <div className="card-body  overflow-auto  ">
                     <h2 className="text-2xl font-bold mb-2">{currentMovie.title}</h2>
                     <p className="mb-1">
-                        <strong>Director:</strong> {currentMovie.director}
+                        <strong>Dyrektor:</strong> {currentMovie.director}
                     </p>
                     <p className="mb-1">
-                        <strong>Actors:</strong> {currentMovie.actors.join(", ")}
+                        <strong>Aktorzy:</strong> {currentMovie.actors.join(", ")}
                     </p>
                     <p className="mb-1">
-                        <strong>Genre:</strong> {currentMovie.genre}
+                        <strong>Gatunek:</strong> {currentMovie.category.fields.name}
                     </p>
                     <p className="mb-1">
-                        <strong>Release Date:</strong>{" "}
+                        <strong>Data wydania:</strong>{" "}
                         {new Date(currentMovie.releaseDate).toDateString()}
                     </p>
                     <p className="mb-1">
-                        <strong>Duration:</strong> {currentMovie.duration} minutes
+                        <strong>Czas trwania:</strong> {currentMovie.duration} minut
                     </p>
                     <p className="mb-3">
-                        <strong>Plot:</strong> {currentMovie.plot}
+                        <strong>Skrót:</strong> {currentMovie.plot}
                     </p>
                     <div className="rating flex justify-center align-middle gap-2">
-                        <p>Average Rating: {averageRating}</p>
+                        <p>Srednia ocena: {averageRating}</p>
                         <div>
                             {[...Array(5)].map((_, i) => (
                                 <input
@@ -180,7 +181,7 @@ const MovieDetails = () => {
                         </div>
                         {hasRated && (
                             <button onClick={deleteRating} className="btn btn-xs btn-danger ">
-                                Delete My Rating
+                                Usuń ocenę
                             </button>
                         )}
                     </div>

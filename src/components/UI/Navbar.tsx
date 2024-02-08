@@ -27,6 +27,10 @@ const Navbar = () => {
       filterMovies(searchTerm);
     } else if (pathname === "/seriale") {
       filterSeries(searchTerm);
+    } else if (pathname === "/polecane-filmy") {
+      filterMovies(searchTerm);
+    } else if (pathname === "/polecane-seriale") {
+      filterSeries(searchTerm);
     }
   };
   const { data: session } = useSession();
@@ -51,7 +55,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-50"
           >
             <li>
               <Link href="/filmy">Filmy</Link>
@@ -71,18 +75,18 @@ const Navbar = () => {
             )}
           </ul>
         </div>
-        <a className="btn btn-ghost normal-case text-xl hidden lg:flex">
-          FilmPortal
-        </a>
+
+        <Link className="btn btn-ghost normal-case text-xl hidden lg:flex" href="/">FilmPortal</Link>
+
       </div>
-      <input
-        type="text"
-        placeholder="Search"
-        className="input input-bordered w-24 md:w-auto"
-        onChange={handleSearch}
-      />
 
       <div className="navbar-end">
+        <input
+          type="text"
+          placeholder="Search"
+          className="input input-bordered  md:w-auto mr-1"
+          onChange={handleSearch}
+        />
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal p-0">
             <li>
@@ -118,7 +122,7 @@ const Navbar = () => {
               </label>
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                className="menu menu-compact z-50 dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
                   <a onClick={openProfileModal}>Profil</a>

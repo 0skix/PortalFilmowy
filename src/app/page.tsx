@@ -1,5 +1,6 @@
 "use client"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
         <p className="text-lg text-gray-400 mb-8">Przygotuj się na niezapomnianą przygodę.</p>
         <div className="flex justify-center gap-4">
           {!session ? (<a href="/signup" className="btn btn-primary">Dołącz teraz</a>) : null}
-          <a href="/filmy" className="btn btn-secondary">Przeglądaj katalog</a>
+          <Link href="/filmy" className="btn btn-secondary">Przeglądaj katalog</Link>
         </div>
       </div>
     </main>

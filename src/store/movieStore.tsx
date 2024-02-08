@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { createClient } from "contentful";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { MovieCard } from "@/types/types";
-import supabase from "../utils/supabaseClient";
 
 interface MovieState {
     movies: MovieCard[];
@@ -38,7 +37,7 @@ const mapContentfulMovie = (item: any): MovieCard => ({
     poster: getImageUrl(item.fields.poster),
     director: String(item.fields.director),
     actors: item.fields.actors ? item.fields.actors.map(String) : [],
-    genre: String(item.fields.genre),
+    category: item.fields.category,
     releaseDate: new Date(String(item.fields.releaseDate)),
     duration: Number(item.fields.duration),
     plot: String(item.fields.plot),
