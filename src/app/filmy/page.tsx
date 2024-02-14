@@ -16,7 +16,7 @@ const MoviesPage: React.FC = () => {
     }));
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [moviesPerPage] = useState<number>(10);
+    const [moviesPerPage] = useState<number>(4);
 
     useEffect(() => {
         fetchMovies();
@@ -55,7 +55,7 @@ const MoviesPage: React.FC = () => {
     );
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-4">
+        <main className="flex min-h-[88vh] flex-col items-center justify-between p-4">
             <div className="flex gap-4 flex-wrap justify-center align-middle">
                 {loadingMovies ? (
                     <Loading />
